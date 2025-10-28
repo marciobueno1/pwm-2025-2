@@ -62,7 +62,7 @@ export default function Index() {
       </View>
       <Button
         title="Ir para Lista de Tarefas"
-        onPress={() => router.navigate("/taskList")}
+        onPress={() => router.navigate("/tasks")}
       />
       <View style={styles.space} />
     </ScrollView>

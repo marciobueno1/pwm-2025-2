@@ -18,6 +18,12 @@ export async function getTasks() {
   return response.data;
 }
 
+export async function getTask(objectId) {
+  console.log("getTask(objectId)", objectId);
+  const response = await instance.get(`/classes/Task/${objectId}`);
+  return response.data;
+}
+
 export async function addTask(task) {
   return await instance.post("/classes/Task", task, {
     headers: headerJson,

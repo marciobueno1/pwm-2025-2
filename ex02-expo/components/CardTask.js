@@ -1,17 +1,24 @@
-import { Button, Switch, View, Text } from "react-native";
+import { View, Text, Pressable, StyleSheet } from "react-native";
 
-export function CardTask({ task, onDelete, onCheck }) {
+export function CardTask({ task, onNavigate }) {
   return (
-    <View>
-      <Text>{task.description}</Text>
-      <Switch
-        trackColor={{ false: "#767577", true: "#81b0ff" }}
-        thumbColor={"#f5dd4b"}
-        ios_backgroundColor="#3e3e3e"
-        onValueChange={() => onCheck(task)}
-        value={task.done}
-      />
-      <Button title="X" onPress={() => onDelete(task.objectId)} />
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: task.done ? "green" : "red" },
+      ]}
+    >
+      <Pressable onPress={onNavigate}>
+        <Text>{task.description}</Text>
+      </Pressable>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    height: 60,
+    marginBottom: 10,
+    justifyContent: "center",
+  },
+});
