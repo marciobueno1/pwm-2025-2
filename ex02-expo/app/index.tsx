@@ -1,5 +1,7 @@
-import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useNavigation, useRouter } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import Constants from "expo-constants";
+import { useEffect, useState } from "react";
 import {
   Alert,
   Button,
@@ -14,11 +16,19 @@ import {
 // import { FlatListExample } from "@/components/FlatListExample";
 import { SectionListExample } from "@/components/SectionListExample";
 
+const statusBarHeight = Constants.statusBarHeight;
+
 export default function Index() {
   const router = useRouter();
   const [idade, onChangeIdade] = useState("");
   const [showDetails, setShowDetails] = useState(true);
   const anoNasc = new Date().getFullYear() - parseInt(idade);
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    navigation.setOptions({ headerShown: false });
+  }, [navigation]);
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Olá Turma!</Text>
@@ -65,6 +75,7 @@ export default function Index() {
         onPress={() => router.navigate("/tasks")}
       />
       <View style={styles.space} />
+      <StatusBar style="dark" />
     </ScrollView>
   );
 }
@@ -81,6 +92,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "beige",
     padding: 15,
+    paddingTop: statusBarHeight + 15,
   },
   title: {
     fontSize: 42,

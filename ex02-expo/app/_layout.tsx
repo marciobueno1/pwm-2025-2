@@ -6,7 +6,18 @@ const queryClient = new QueryClient();
 export default function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Stack />
+      <Stack
+        screenOptions={{
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: "beige",
+          },
+          headerTintColor: "darkslategrey",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+        }}
+      />
     </QueryClientProvider>
   );
 }

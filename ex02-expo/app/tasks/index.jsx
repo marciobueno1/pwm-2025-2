@@ -1,14 +1,20 @@
 import { addTask, getTasks } from "@/api";
 import { CardTask } from "@/components/CardTask";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useNavigation, useRouter } from "expo-router";
+import { useEffect, useState } from "react";
 import { Button, FlatList, Text, TextInput, View } from "react-native";
 
 export default function TaskList() {
+  const navigation = useNavigation();
   const router = useRouter();
   const [description, setDescription] = useState("");
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    navigation.setOptions({ title: `Tarefas` });
+  }, [navigation]);
+
   const { data, isFetching, error, isPending } = useQuery({
     queryKey: ["todos"],
     queryFn: getTasks,
@@ -32,9 +38,8 @@ export default function TaskList() {
     return <Text>No data available</Text>;
   }
   return (
-    <View>
-      <Text style={{ fonteSize: 24, fontWeight: "bold" }}>Task List</Text>
-      <View style={{ flexDirection: "row" }}>
+    <View style={{ padding: 10 }}>
+      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <TextInput
           placeholder="Add a task"
           value={description}

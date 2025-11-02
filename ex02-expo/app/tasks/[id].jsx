@@ -1,13 +1,15 @@
 "use client";
 
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { ActivityIndicator, Button, Text, View } from "react-native";
 import { getTask, deleteTask, updateTask } from "@/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { TaskDetails } from "@/components/TaskDetails";
+import { useEffect } from "react";
 
 export default function Task() {
   const router = useRouter();
+  const navigation = useNavigation();
   const { id } = useLocalSearchParams();
   const {
     data: task,
@@ -32,8 +34,13 @@ export default function Task() {
     mutationFn: updateTask,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`todos/${id}`] });
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
     },
   });
+
+  useEffect(() => {
+    navigation.setOptions({ title: `Tarefa: ${id}` });
+  }, [navigation, id]);
 
   return (
     <View>
