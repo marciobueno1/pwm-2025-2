@@ -1,6 +1,6 @@
+import Constants from "expo-constants";
 import { useNavigation, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import Constants from "expo-constants";
 import { useEffect, useState } from "react";
 import {
   Alert,
@@ -15,10 +15,12 @@ import {
 } from "react-native";
 // import { FlatListExample } from "@/components/FlatListExample";
 import { SectionListExample } from "@/components/SectionListExample";
+import { useStore } from "@/zustand";
 
 const statusBarHeight = Constants.statusBarHeight;
 
 export default function Index() {
+  const { add, clear, count, inc } = useStore();
   const router = useRouter();
   const [idade, onChangeIdade] = useState("");
   const [showDetails, setShowDetails] = useState(true);
@@ -74,6 +76,18 @@ export default function Index() {
         title="Ir para Lista de Tarefas"
         onPress={() => router.navigate("/tasks")}
       />
+      <Button
+        title="Zustand Counter"
+        onPress={() => router.navigate("/counter")}
+      />
+      <View style={styles.hr} />
+      <View style={styles.counter}>
+        <Text>{count}</Text>
+        <Button title=" + " onPress={inc} />
+        <Button title=" 0 " onPress={clear} />
+        <Button title=" +5 " onPress={() => add(5)} />
+        <Button title=" -5 " onPress={() => add(-5)} />
+      </View>
       <View style={styles.space} />
       <StatusBar style="dark" />
     </ScrollView>
@@ -115,6 +129,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 10,
   },
+  hr: {
+    height: 10,
+  },
   space: {
     height: 70,
   },
@@ -122,5 +139,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     width: 250,
+  },
+  counter: {
+    flexDirection: "row",
+    width: "90%",
+    justifyContent: "space-between",
+    alignItems: "center",
+    borderColor: "black",
+    borderWidth: 1,
+    padding: 5,
   },
 });
