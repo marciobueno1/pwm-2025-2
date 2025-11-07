@@ -9,6 +9,10 @@ export const useStore = create(
       inc: () => set((state) => ({ count: state.count + 1 })),
       clear: () => set({ count: 0 }),
       add: (val) => set((state) => ({ count: state.count + val })),
+
+      user: null,
+      setUser: (user) => set({ user }),
+      clearUser: () => set({ user: null }),
     }),
     { name: "counter", storage: createJSONStorage(() => AsyncStorage) }
   )

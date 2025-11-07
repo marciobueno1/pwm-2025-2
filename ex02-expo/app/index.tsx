@@ -20,7 +20,7 @@ import { useStore } from "@/zustand";
 const statusBarHeight = Constants.statusBarHeight;
 
 export default function Index() {
-  const { add, clear, count, inc } = useStore();
+  const { add, clear, count, inc, user } = useStore();
   const router = useRouter();
   const [idade, onChangeIdade] = useState("");
   const [showDetails, setShowDetails] = useState(true);
@@ -34,6 +34,7 @@ export default function Index() {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Olá Turma!</Text>
+      <Text>{user ? user.username : "no user"}</Text>
       <Image
         style={styles.avatar}
         source={require("@/assets/images/avatar.jpg")}
@@ -75,6 +76,10 @@ export default function Index() {
       <Button
         title="Ir para Lista de Tarefas"
         onPress={() => router.navigate("/tasks")}
+      />
+      <Button
+        title="Signing Up"
+        onPress={() => router.navigate("/signingUp")}
       />
       <Button
         title="Zustand Counter"
