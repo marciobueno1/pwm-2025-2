@@ -14,27 +14,57 @@ import {
   View,
 } from "react-native";
 // import { FlatListExample } from "@/components/FlatListExample";
+import { loggingOut } from "@/api";
 import { SectionListExample } from "@/components/SectionListExample";
 import { useStore } from "@/zustand";
+import { useMutation } from "@tanstack/react-query";
 
 const statusBarHeight = Constants.statusBarHeight;
 
 export default function Index() {
-  const { add, clear, count, inc, user } = useStore();
+  const { add, clear, count, inc, user, setUser } = useStore();
   const router = useRouter();
   const [idade, onChangeIdade] = useState("");
   const [showDetails, setShowDetails] = useState(true);
   const anoNasc = new Date().getFullYear() - parseInt(idade);
   const navigation = useNavigation();
 
+  const mutation = useMutation({
+    mutationFn: loggingOut,
+    onSuccess: () => {
+      setUser(null);
+    },
+    onError: (error) => {
+      setUser(null);
+      console.log("Error logging out:", error);
+    },
+  });
+
   useEffect(() => {
     navigation.setOptions({ headerShown: false });
   }, [navigation]);
 
+  const handlePressUser = () => {
+    if (!user) {
+      router.navigate("/loggingIn");
+      return;
+    }
+    Alert.alert("Log Out", "Você deseja sair?", [
+      {
+        text: "Cancel",
+        onPress: () => {},
+        style: "cancel",
+      },
+      { text: "Log Out", onPress: () => mutation.mutate(user) },
+    ]);
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Olá Turma!</Text>
-      <Text>{user ? user.username : "no user"}</Text>
+      <Pressable onPress={handlePressUser}>
+        <Text>{user ? user.username : "no user"}</Text>
+      </Pressable>
       <Image
         style={styles.avatar}
         source={require("@/assets/images/avatar.jpg")}

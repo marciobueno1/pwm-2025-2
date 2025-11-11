@@ -1,11 +1,13 @@
 import { addTask, getTasks } from "@/api";
 import { CardTask } from "@/components/CardTask";
+import { useStore } from "@/zustand";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigation, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Button, FlatList, Text, TextInput, View } from "react-native";
 
 export default function TaskList() {
+  const { user } = useStore();
   const navigation = useNavigation();
   const router = useRouter();
   const [description, setDescription] = useState("");
@@ -17,7 +19,7 @@ export default function TaskList() {
 
   const { data, isFetching, error, isPending } = useQuery({
     queryKey: ["todos"],
-    queryFn: getTasks,
+    queryFn: () => getTasks(user ?? {}),
   });
 
   const addMutation = useMutation({
@@ -25,6 +27,11 @@ export default function TaskList() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["todos"] });
       setDescription("");
+    },
+    onError: (error) => {
+      console.log("error", error);
+      console.log("errorMessage", error.message);
+      Alert.alert("Something went wrong", error.message);
     },
   });
 
@@ -47,7 +54,12 @@ export default function TaskList() {
         />
         <Button
           title="Add"
-          onPress={() => addMutation.mutate({ description })}
+          onPress={() =>
+            addMutation.mutate({
+              description,
+              sessionToken: user?.sessionToken,
+            })
+          }
         />
       </View>
       <View

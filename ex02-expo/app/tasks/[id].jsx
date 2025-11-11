@@ -1,11 +1,11 @@
 "use client";
 
-import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
-import { ActivityIndicator, Button, Text, View } from "react-native";
-import { getTask, deleteTask, updateTask } from "@/api";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { deleteTask, getTask, updateTask } from "@/api";
 import { TaskDetails } from "@/components/TaskDetails";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { useEffect } from "react";
+import { ActivityIndicator, Button, Text, View } from "react-native";
 
 export default function Task() {
   const router = useRouter();
@@ -27,6 +27,10 @@ export default function Task() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["todos"] });
       router.navigate("/tasks");
+    },
+    onError: (error) => {
+      console.log("error", error);
+      Alert.alert("Something went wrong", error.message);
     },
   });
 
