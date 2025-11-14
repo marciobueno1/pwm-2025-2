@@ -2,12 +2,14 @@
 
 import { deleteTask, getTask, updateTask } from "@/api";
 import { TaskDetails } from "@/components/TaskDetails";
+import { useStore } from "@/zustand";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { useEffect } from "react";
 import { ActivityIndicator, Button, Text, View } from "react-native";
 
 export default function Task() {
+  const { user } = useStore();
   const router = useRouter();
   const navigation = useNavigation();
   const { id } = useLocalSearchParams();
@@ -18,7 +20,7 @@ export default function Task() {
     isPending,
   } = useQuery({
     queryKey: [`todos/${id}`],
-    queryFn: () => getTask(id),
+    queryFn: () => getTask({ objectId: id, sessionToken: user?.sessionToken }),
   });
   const queryClient = useQueryClient();
 
@@ -34,13 +36,27 @@ export default function Task() {
     },
   });
 
+  const handleOnDelete = () => {
+    deleteMutation.mutate({ ...task, sessionToken: user?.sessionToken });
+  };
+
   const updateMutation = useMutation({
     mutationFn: updateTask,
     onSuccess: () => {
+      console.log("success updated task");
       queryClient.invalidateQueries({ queryKey: [`todos/${id}`] });
       queryClient.invalidateQueries({ queryKey: ["todos"] });
     },
+    onError: (error) => {
+      console.log("error updated task", error);
+    },
   });
+
+  const handleOnCheck = () => {
+    console.log("task", task);
+    console.log("handleOnCheck sessionToken", user?.sessionToken);
+    updateMutation.mutate({ ...task, sessionToken: user?.sessionToken });
+  };
 
   useEffect(() => {
     navigation.setOptions({ title: `Tarefa: ${id}` });
@@ -54,8 +70,8 @@ export default function Task() {
       {task && (
         <TaskDetails
           task={task}
-          onDelete={deleteMutation.mutate}
-          onCheck={updateMutation.mutate}
+          onDelete={handleOnDelete}
+          onCheck={handleOnCheck}
           onNavigate={() => router.navigate(`/tasks/${task.objectId}`)}
         />
       )}

@@ -1,4 +1,4 @@
-import { Button, Switch, View, Text } from "react-native";
+import { Button, Switch, Text, View } from "react-native";
 
 export function TaskDetails({ task, onDelete, onCheck }) {
   console.log("CardTask", task);
@@ -12,7 +12,7 @@ export function TaskDetails({ task, onDelete, onCheck }) {
         trackColor={{ false: "#767577", true: "#81b0ff" }}
         thumbColor={"#f5dd4b"}
         ios_backgroundColor="#3e3e3e"
-        onValueChange={() => onCheck(task)}
+        onValueChange={onCheck}
         value={task.done}
       />
       <Button title="X" onPress={() => onDelete(task.objectId)} />

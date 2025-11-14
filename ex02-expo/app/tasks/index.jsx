@@ -19,7 +19,7 @@ export default function TaskList() {
 
   const { data, isFetching, error, isPending } = useQuery({
     queryKey: ["todos"],
-    queryFn: () => getTasks(user ?? {}),
+    queryFn: () => getTasks(user?.sessionToken),
   });
 
   const addMutation = useMutation({
